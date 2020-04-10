@@ -5,7 +5,7 @@ $VCPKG_BUILD="$SEWAS_ROOT/thirdparty/vcpkg/build"
 
 Write-Output "[START] Bootstraping"
 
-$_vcpkg_not_found=!@("(Get-Command vcpkg.exe)" -or (Test-Path "$VCPKG_ROOT/vcpkg.exe"))
+$_vcpkg_not_found=!@("(Get-Command vcpkg.exe -ErrorAction SilentlyContinue)" -or (Test-Path "$VCPKG_ROOT/vcpkg.exe"))
 if ($_vcpkg_not_found)
 {
     Write-Output "vcpkg has not been found"
