@@ -14,7 +14,15 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: bootstrap
-      run: . bootstrap.sh
+      run: .\bootstrap.bat
+
+    - name: configure
+      run: mkdir build && cd build && cmake .. -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=OFF -DSEWAS_WITH_PARSEC=OFF -DVERBOSE=ON && cd ..
+    - name: build
+      run: cd build && make && cd ..
+      
+    - name: test
+      run: cd build && ctest --output-on-failure
 
   linux:
     runs-on: ubuntu-latest
@@ -37,7 +45,7 @@ jobs:
       run: . bootstrap.sh
 
     - name: configure
-      run: mkdir build && cd build && cmake .. -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=OFF -DSEWAS_WITH_PARSEC=OFF -DVERBOSE=ON && cd -
+      run: mkdir build && cd build && cmake .. -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=ON -DSEWAS_WITH_PARSEC=ON -DVERBOSE=ON && cd -
     - name: build
       run: cd build && make && cd -
       
