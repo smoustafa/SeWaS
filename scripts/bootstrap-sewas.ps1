@@ -35,6 +35,8 @@ else
 {
     If (Test-Path "$VCPKG_ROOT/vcpkg.exe") {$_vcpkg="$VCPKG_ROOT/vcpkg.exe"} Else {$_vcpkg=(Get-Command vcpkg.exe).Source}
     
+    $_vcpkg update
+    
     Write-Output "vcpkg found : $_vcpkg"
 }
 
