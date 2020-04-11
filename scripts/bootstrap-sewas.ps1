@@ -17,9 +17,9 @@ if ($_vcpkg_not_found)
         if (Test-Path "$VCPKG_BUILD")
         {
             Remove-Item -Recurse "$VCPKG_BUILD" -ErrorAction Stop
-            New-Item -Path "$VCPKG_BUILD" -ItemType "directory" -ErrorAction Stop
 	}
-	echo $VCPKG_BUILD
+        New-Item -Path "$VCPKG_BUILD" -ItemType "directory" -ErrorAction Stop
+	
         Copy-Item "$SEWAS_ROOT/cmake/resources/vcpkg/CMakeLists.txt" -Destination "$VCPKG_BUILD" -ErrorAction Stop
 
         (cd "$VCPKG_BUILD") -and (cmake .) -and (cmake --build .)
