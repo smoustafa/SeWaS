@@ -22,9 +22,7 @@ if ($_vcpkg_not_found)
 	
         Copy-Item "$SEWAS_ROOT/cmake/resources/vcpkg/CMakeLists.txt" -Destination "$VCPKG_BUILD" -ErrorAction Stop
 	
-	& cmake --version
-
-        (cd "$VCPKG_BUILD") -and (cmake .) -and (cmake --build .)
+        (cd "$VCPKG_BUILD") -and ls -and (cmake .) -and (cmake --build .)
     }
     catch
     {
