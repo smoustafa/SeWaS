@@ -19,7 +19,7 @@ jobs:
     - name: configure
       run: mkdir build && cd build && cmake .. -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=OFF -DSEWAS_WITH_PARSEC=OFF -DVERBOSE=ON && cd ..
     - name: build
-      run: cd build && make && cd ..
+      run: cd build && ninja && cd ..
       
     - name: test
       run: cd build && ctest --output-on-failure
