@@ -38,9 +38,7 @@ else
     $_vcpkg="$VCPKG_ROOT/vcpkg.exe"
     
     Write-Output "vcpkg found : $_vcpkg"
-    Write-Output "vcpkg version :"
     & $_vcpkg version
-
     & $_vcpkg update    
 }
 
