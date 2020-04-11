@@ -340,6 +340,8 @@ if(SEWAS_WITH_PARSEC)
         endif()
 
         jdf_rules(JDF2C_SOURCES ${CMAKE_SOURCE_DIR}/src/runtimes/parsec/sewas.jdf)
+	set_source_files_properties(${JDF2C_SOURCES}
+        	                    PROPERTIES GENERATED TRUE)
         include_directories(${CMAKE_CURRENT_BINARY_DIR})
     endif()
 
