@@ -47,9 +47,9 @@ foreach(target FDOTest HaloExtractTest HaloUpdateTest HaloExchangeTest ComputeVe
 
     # discovering tests
     if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-        gtest_discover_tests(${target} EXTRA_ARGS "--gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}\\" WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        gtest_discover_tests(${target} EXTRA_ARGS "--gtest_output=xml" WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     elseif ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-        gtest_discover_tests(${target} EXTRA_ARGS "--gtest_output=xml:${CMAKE_CURRENT_BINARY_DIR}/" WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+        gtest_discover_tests(${target} EXTRA_ARGS "--gtest_output=xml" WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
     else()
         message(WARNING "GTest output directory is not set for this system : ${CMAKE_SYSTEM_NAME}")
         gtest_discover_tests(${target} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
