@@ -17,9 +17,9 @@ jobs:
       run: .\bootstrap.bat
 
     - name: configure
-      run: mkdir build && cd build && cmake .. -G "Ninja" -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=OFF -DSEWAS_WITH_PARSEC=OFF -DVERBOSE=ON && cd ..
+      run: mkdir build && cd build && cmake .. -DBUILD_TESTING=ON -DSEWAS_DISTRIBUTED=OFF -DSEWAS_WITH_PARSEC=OFF -DVERBOSE=ON && cd ..
     - name: build
-      run: cd build && ninja -C build && cd ..
+      run: cmake --build build
       
     - name: test
       run: cd build && ctest --output-on-failure
