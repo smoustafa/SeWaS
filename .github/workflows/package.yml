@@ -1,0 +1,28 @@
+name: Build Docker Image CI
+on: 
+  pull_request:
+    branches:
+    - master
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Build the Docker container image
+      run: | 
+        docker build -t docker.pkg.github.com/smoustafa/dockerwebapi/dockerwebapi4:latest .
+    
+    - name: docker images
+      run: |
+        docker images
+
+    - name: Push the image to Github Packages Repository
+      run: |
+        docker login docker.pkg.github.com -u publisher -p "${{ secrets.PAT3 }}"
+        docker push docker.pkg.github.com/smoustafa/dockerwebapi/dockerwebapi4:latest
