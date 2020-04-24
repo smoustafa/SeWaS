@@ -52,4 +52,9 @@ jobs:
       run: cd build && make && cd -
       
     - name: test
-      run: cd build && ctest --output-on-failure
+      run: cd build && ctest --output-on-failure && cd -
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: sewas
+        path: build
