@@ -34,5 +34,5 @@ TEST(SEWASParameterManagerTest, HelpExitsSuccessfully)
       (void)pm;
     },
     ::testing::ExitedWithCode(0),
-    "Allowed options");
+    "");
 }

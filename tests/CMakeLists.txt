@@ -52,6 +52,7 @@ add_executable(SourcePlacementTest
     ../src/Mesh3DPartitioning.cxx
     ../src/SEWASParameterManager.cxx
     ../src/SEWASPaRSEC.cxx
+    ../src/SEWASSequential.cxx
     ../src/ExecutionContext.cxx
     ../src/MetricsManager.cxx
     ../src/LinearSeismicWaveModel.cxx

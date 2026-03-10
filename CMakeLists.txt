@@ -377,17 +377,24 @@ set(SEWAS_LIBRARIES ${SEWAS_LIBRARIES} ${Boost_LIBRARIES})
 # -------------------------------------------------------------------
 # Eigen
 # -------------------------------------------------------------------
-find_package(Eigen3 3.3.3)
+find_package(Eigen3)
 if (NOT Eigen3_FOUND)
     # eigen3 not found; trying to download it
     if (DOWNLOAD_MISSING_DEPS)
         _vcpkg_install(eigen3)
-        find_package(Eigen3 3.3.3 REQUIRED)
+        find_package(Eigen3 REQUIRED)
     else()
         message(FATAL_ERROR "eigen3 not found. Please set DOWNLOAD_MISSING_DEPS for enabling automatic download of missing dependencies")        
     endif()
 endif()
-include_directories("${EIGEN3_INCLUDE_DIR}")
+if (TARGET Eigen3::Eigen)
+    get_target_property(SEWAS_EIGEN_INCLUDE_DIRS Eigen3::Eigen INTERFACE_INCLUDE_DIRECTORIES)
+    include_directories(${SEWAS_EIGEN_INCLUDE_DIRS})
+elseif (Eigen3_INCLUDE_DIRS)
+    include_directories(${Eigen3_INCLUDE_DIRS})
+elseif (EIGEN3_INCLUDE_DIR)
+    include_directories(${EIGEN3_INCLUDE_DIR})
+endif()
 
 # -------------------------------------------------------------------
 # Boost.SIMD

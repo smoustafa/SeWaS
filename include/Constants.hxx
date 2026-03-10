@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 #include "constants.h"
 
 namespace SWS
@@ -73,4 +75,10 @@ namespace SWS
   enum Cores{C0, C1, C2, C3, NB_CORES}; // CPU cores
 
   enum ColorizationStrategies{CORE, TIME_STEP};
+
+  template<typename Enum, typename std::enable_if<std::is_enum<Enum>::value, int>::type = 0>
+  constexpr auto format_as(Enum value) noexcept
+  {
+    return static_cast<typename std::underlying_type<Enum>::type>(value);
+  }
 }
