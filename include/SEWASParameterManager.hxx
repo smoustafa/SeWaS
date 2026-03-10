@@ -135,14 +135,14 @@ private:
 
       po::notify(vm_);
 
+      if (vm_.count("help")){
+        std::cout << desc << "\n";
+        exit(0);
+      }
+
       if (vm_.size() < nb_options){
         std::cout << desc << "\n";
         exit(-1);
-      }
-
-      if (vm_.count("help")){
-        std::cout << desc << "\n";
-        return 0;
       }
     }
     catch(const po::error & e){

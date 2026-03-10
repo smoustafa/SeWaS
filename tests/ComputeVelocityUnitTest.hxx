@@ -215,14 +215,14 @@ protected:
           for (int ljj = 0; ljj < lnzz; ljj++) {
 
             for (auto d : { SWS::X, SWS::Y, SWS::Z }) {
-              auto& halo = vH_(d)(lii, lkk, lkk)(l);
+              auto& halo = vH_(d)(lii, ljj, lkk)(l);
               delete[] halo;
               halo = nullptr;
             }
 
             for (auto sc :
                  { SWS::XX, SWS::YY, SWS::ZZ, SWS::XY, SWS::XZ, SWS::YZ }) {
-              auto& halo = sigmaH_(sc)(lii, lkk, lkk)(l);
+              auto& halo = sigmaH_(sc)(lii, ljj, lkk)(l);
               delete[] halo;
               halo = nullptr;
             }
@@ -233,6 +233,8 @@ protected:
 
     } // l
 
+    LinearSeismicWaveModel::releaseInstance();
+    DataSet::releaseInstance();
     HaloManager::releaseInstance();
     Mesh3DPartitioning::releaseInstance();
     CartesianMesh3D::releaseInstance();

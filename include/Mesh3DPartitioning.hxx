@@ -48,6 +48,10 @@ public:
   inline const auto & ccy() const{ return ccy_; }
   inline const auto & ccz() const{ return ccz_; }
 
+  inline const auto & hnx() const{ return hnx_; }
+  inline const auto & hny() const{ return hny_; }
+  inline const auto & hnz() const{ return hnz_; }
+
   inline const auto & nxx() const{ return nxx_; }
   inline const auto & nyy() const{ return nyy_; }
   inline const auto & nzz() const{ return nzz_; }

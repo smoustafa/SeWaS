@@ -69,10 +69,14 @@ const auto DataSet::getLayer(const int k, const int ii, const int jj, const int 
 {
   /* Get the layer to which belongs the plane of order k within the tile (ii,jj,kk) */
 
-  // FIXME we assume a uniform tile size
-  const auto cz=pm_.cz(); /* Actual z-size of the tile without halo and padding */
+  const auto * pMesh=Mesh3DPartitioning::getInstance();
 
-  const auto lz=(kk*cz + k)*pm_.ds();
+  int globalZCell=0;
+  for (int tile=0; tile<kk; tile++){
+    globalZCell += pMesh->ccz()[pMesh->lkk(tile)] - 2 * pMesh->hnz();
+  }
+
+  const auto lz=(globalZCell + k)*pm_.ds();
 
   for (auto & layer : pm_.layers()){
     const auto start=pm_.start().at(layer)[SWS::Z];

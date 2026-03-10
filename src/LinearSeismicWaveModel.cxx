@@ -43,6 +43,29 @@
 #include "SEWASPaRSEC.hxx"
 #include "MetricsManager.hxx"
 
+namespace{
+bool locateSourceCell(const SWS::RealType coordinate,
+                      const SWS::RealType ds,
+                      const int nCells,
+                      const int tileCells,
+                      int & tile,
+                      int & cellInTile)
+{
+  if (coordinate < 0){
+    return false;
+  }
+
+  const auto cell=static_cast<int>(std::floor(coordinate/ds));
+  if (cell < 0 || cell >= nCells){
+    return false;
+  }
+
+  tile=cell/tileCells;
+  cellInTile=cell%tileCells;
+
+  return true;
+}
+}
 
 LinearSeismicWaveModel * LinearSeismicWaveModel::pInstance_ = nullptr;
 
@@ -587,7 +610,7 @@ void LinearSeismicWaveModel::addVelocitySource(const SWS::Directions & d,
   auto & vX=v_(SWS::X)(ii,jj,kk);
   auto & vY=v_(SWS::Y)(ii,jj,kk);
 
-  const auto nsrc=pm_.sources().size();
+  const auto nsrc=is.size();
 
   const auto dt=2*dt_;
   const auto l=ts/2;
@@ -661,42 +684,49 @@ void LinearSeismicWaveModel::setVelocitySourceLocations()
   auto pMesh=Mesh3DPartitioning::getInstance();
 
   const auto ds=CartesianMesh3D::getInstance()->ds();
+  const auto nx=CartesianMesh3D::getInstance()->nx();
+  const auto ny=CartesianMesh3D::getInstance()->ny();
+  const auto nz=CartesianMesh3D::getInstance()->nz();
 
   LOG(SWS::LOG_DEBUG, "[start] Evaluating velocity source locations");
 
-  // FIXME for the moment we assume that all SpatialBlocks have the same size
-  const auto cx=pMesh->ccx()[0];
-  const auto cy=pMesh->ccy()[0];
-  const auto cz=pMesh->ccz()[0];
+  const auto cx=pm_.cx();
+  const auto cy=pm_.cy();
+  const auto cz=pm_.cz();
 
   for (auto & source : pm_.sources()){
     const auto xs=pm_.xs().at(source);
     const auto ys=pm_.ys().at(source);
     const auto zs=pm_.zs().at(source);
 
-    // Find the coordinates of the spatial cell to which belongs the source s
-    const int i=floor(xs/ds)+1;
-    const int j=floor(ys/ds)+1;
-    const int k=floor(zs/ds)+1;
-
-    // Find the coordinates of the spatial block to which belongs the source s
-    const auto ii=i/cx;
-    const auto jj=j/cy;
-    const auto kk=k/cz;
-
-    // Relocating the source location to take into account the halo
-    const auto is=i%cx + v_(0)(ii,jj,kk).iStart();
-    const auto js=j%cy + v_(0)(ii,jj,kk).jStart();
-    const auto ks=k%cz + v_(0)(ii,jj,kk).kStart();
+    int ii=0, jj=0, kk=0;
+    int i=0, j=0, k=0;
+    if (!locateSourceCell(xs, ds, nx, cx, ii, i) ||
+        !locateSourceCell(ys, ds, ny, cy, jj, j) ||
+        !locateSourceCell(zs, ds, nz, cz, kk, k)){
+      LOG(SWS::LOG_WARN, "Ignoring source {} at ({}, {}, {}): coordinates are outside the computational domain",
+          source, xs, ys, zs);
+      continue;
+    }
 
     auto rank=ExecutionContext::rank();
+    if (rank != Mesh3DPartitioning::getInstance()->rank_of(ii, jj, kk)){
+      continue;
+    }
 
-    if (rank == Mesh3DPartitioning::getInstance()->rank_of(ii, jj, kk)){
-      // The location (is,js,ks) contains a source
-      LOG(SWS::LOG_INFO, "Found velocity source at cell ({}, {}, {}) within the tile ({}, {}, {})", is, js, ks, ii, jj, kk);
-      for (auto d : {SWS::X, SWS::Y, SWS::Z}){
-        v_(d)(ii,jj,kk).addSource(is, js, ks);
-      }
+    const auto lii=pMesh->lii(ii);
+    const auto ljj=pMesh->ljj(jj);
+    const auto lkk=pMesh->lkk(kk);
+
+    // Relocating the source location to take into account the halo
+    const auto is=i + v_(0)(lii,ljj,lkk).iStart();
+    const auto js=j + v_(0)(lii,ljj,lkk).jStart();
+    const auto ks=k + v_(0)(lii,ljj,lkk).kStart();
+
+    // The location (is,js,ks) contains a source
+    LOG(SWS::LOG_INFO, "Found velocity source at cell ({}, {}, {}) within the tile ({}, {}, {})", is, js, ks, ii, jj, kk);
+    for (auto d : {SWS::X, SWS::Y, SWS::Z}){
+      v_(d)(lii,ljj,lkk).addSource(is, js, ks);
     }
   } // sources
 

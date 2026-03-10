@@ -43,8 +43,25 @@ add_executable(ComputeVelocityTest
     ../src/LogManager.cxx
     ../src/IOManager.cxx
     ${JDF2C_SOURCES})
+add_executable(ParameterManagerTest
+    ParameterManagerUnitTest.cxx
+    ../src/SEWASParameterManager.cxx)
+add_executable(SourcePlacementTest
+    SourcePlacementUnitTest.cxx
+    ../src/CartesianMesh3D.cxx
+    ../src/Mesh3DPartitioning.cxx
+    ../src/SEWASParameterManager.cxx
+    ../src/SEWASPaRSEC.cxx
+    ../src/ExecutionContext.cxx
+    ../src/MetricsManager.cxx
+    ../src/LinearSeismicWaveModel.cxx
+    ../src/DataSet.cxx
+    ../src/HaloManager.cxx
+    ../src/LogManager.cxx
+    ../src/IOManager.cxx
+    ${JDF2C_SOURCES})
 
-foreach(target FDOTest HaloExtractTest HaloUpdateTest HaloExchangeTest ComputeVelocityTest)
+foreach(target FDOTest HaloExtractTest HaloUpdateTest HaloExchangeTest ComputeVelocityTest ParameterManagerTest SourcePlacementTest)
     set_property(TARGET ${target} PROPERTY CXX_STANDARD 17)
     target_link_libraries(${target} gtest_main ${SEWAS_LIBRARIES})
 
@@ -61,4 +78,5 @@ endforeach()
 
 # copy input data file used by some tests
 configure_file(${CMAKE_SOURCE_DIR}/data/input/TestX.json ${CMAKE_CURRENT_BINARY_DIR}/TestX.json)
-
+configure_file(${CMAKE_SOURCE_DIR}/data/input/TestBoundarySource.json ${CMAKE_CURRENT_BINARY_DIR}/TestBoundarySource.json)
+configure_file(${CMAKE_SOURCE_DIR}/data/input/TestMultipleSources.json ${CMAKE_CURRENT_BINARY_DIR}/TestMultipleSources.json)
